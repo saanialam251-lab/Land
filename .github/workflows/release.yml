@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  test-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: stable
+
+      - name: Bootstrap Android if needed
+        run: |
+          if [ ! -f android/app/build.gradle ]; then
+            flutter create . --project-name measure_reality --org com.measurereality --platforms=android
+          fi
+          mkdir -p android/app/src/main/kotlin/com/measurereality
+          cp -f native/android/*.kt android/app/src/main/kotlin/com/measurereality/ || true
+
+      - name: Dependencies
+        run: flutter pub get
+
+      - name: Unit tests
+        run: flutter test
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Build App Bundle
+        run: flutter build appbundle --release
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
