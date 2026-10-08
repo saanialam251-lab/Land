@@ -10,8 +10,8 @@
 ///  NEVER paste the "service_role" / "secret" key here.
 /// ─────────────────────────────────────────────────────────────────────
 class SupabaseConfig {
-  static const String url = 'PASTE_YOUR_SUPABASE_URL_HERE'; // https://xxxxxxxx.supabase.co
-  static const String anonKey = 'PASTE_YOUR_ANON_OR_PUBLISHABLE_KEY_HERE';
+  static const String url = 'https://sobjalkgojubqjwwqopp.supabase.co'; // https://xxxxxxxx.supabase.co
+  static const String anonKey = 'sb_publishable_-k6vlRIh10tcZVOz3tPyIw_INdKZ7Uw';
 
   /// False until both values above have been replaced.
   static bool get isConfigured =>
